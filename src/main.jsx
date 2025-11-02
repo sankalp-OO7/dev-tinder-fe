@@ -1,14 +1,28 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import { createBrowserRouter, Link } from "react-router";
+import { RouterProvider } from "react-router-dom";
 import App from "./App.jsx";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
+import ErrorPage from "./components/ErrorPage.jsx";
+import Login from "./components/login.jsx";
+import Profile from "./components/Profile.jsx";
+import Body from "./components/Body.jsx";
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
+      { path: "/login", element: <Login /> },
+      { path: "/profile", element: <Profile /> },
+      { path: "/body", element: <Body /> },
+    ],
+  },
+]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </StrictMode>
 );
