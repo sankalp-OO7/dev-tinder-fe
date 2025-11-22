@@ -12,14 +12,27 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { logout } from "../redux/authSlice/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Profile", "Connection", "Feed"];
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const auth = useSelector((store) => store.auth.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    handleCloseUserMenu();
+    console.log("Logout clicked");
+    dispatch(logout());
+    window.cookieStore.delete("token");
+    navigate("/login");
+    console.log(auth);
+  };
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -39,26 +52,28 @@ function Navbar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <WorkHistoryIcon
-            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-          />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            DEVTINDER{" "}
-          </Typography>
+          <Link to="/">
+            <Typography
+              variant="h6"
+              noWrap
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "monospace",
+                fontWeight: 700,
+                cursor: "pointer",
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              {" "}
+              <WorkHistoryIcon
+                sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+              />
+              DEVTINDER{" "}
+            </Typography>
+          </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -129,7 +144,16 @@ function Navbar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="https://picsum.photos/200/200" />
+                <Avatar
+                  alt="Remy Sharp"
+                  src={
+                    auth?.fotoURL ||
+                    "https://media.istockphoto.com/id/1553217327/vector/user-profile-icon-avatar-person-sign-profile-picture-portrait-symbol-easily-editable-line.jpg?s=170667a&w=0&k=20&c=xUuHLFaa94WIFdV-XBgxX9SSsaJJgGQhE1Tmevqrytg="
+                  }
+                />
+                <Typography sx={{ ml: 2, color: "white" }}>
+                  {auth?.name || "Guest"}
+                </Typography>
               </IconButton>
             </Tooltip>
             <Menu
@@ -157,6 +181,10 @@ function Navbar() {
                   </Link>
                 </MenuItem>
               ))}
+
+              <MenuItem onClick={handleLogout}>
+                <Typography sx={{ textAlign: "center" }}>Logout</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

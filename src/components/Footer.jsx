@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <div>
+    <div style={{ marginTop: "50px" }}>
       <div
         style={{
           position: "fixed",
